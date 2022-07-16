@@ -47,3 +47,31 @@ def mape_derivative(y_true, y):
     delta = y-y_true
     return (delta>0).astype(float)/np.abs(y_true)-(delta<0).astype(float)/np.abs(y_true)
 
+
+def _softmax(X):
+    exps = np.exp(X - np.max(X))
+    return exps / np.sum(exps)
+
+def cross_entropy(labels,logits):
+    """
+    Cross-entropy loss
+    :param logits: output from neural net, shape is (num_examples,num_classes)
+    :param labels: labels from y_train. NB! They must not be one-hot encoded!
+    :return error
+    """
+    p = _softmax(logits)
+    log_likelihood = -np.log(p[0,labels])
+    loss = np.sum(log_likelihood)
+    return loss
+
+def cross_entropy_derivative(y,X):
+    """
+      Cross-entropy loss derivative
+      :param logits: output from neural net, shape is (num_examples,num_classes)
+      :param labels: labels from y_train. NB! They must not be one-hot encoded!
+      :return error gradient
+      """
+    grad = _softmax(X)
+    grad[0,y] -= 1
+    grad = grad
+    return grad
