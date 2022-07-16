@@ -82,3 +82,28 @@ def cross_entropy_derivative(y, X):
     grad[0, y] -= 1
     grad = grad
     return grad
+
+
+def cossim(y_true, y):
+    """Cosine similarity loss"""
+    # add small constants to avoid zero vectors
+    y += 1e-7
+    y_true += 1e-7
+    # https://math.stackexchange.com/questions/1923613/partial-derivative-of-cosine-similarity
+    norm_yt = np.linalg.norm(y_true)
+    norm_y = np.linalg.norm(y)
+    cossim = np.sum(y*y_true)/(norm_y*norm_yt)
+    return np.sum(1-cossim)
+
+def cossim_derivative(y_true, y):
+    """Cosine similarity derivative"""
+    # add small constants to avoid zero vectors
+    y += 1e-7
+    y_true += 1e-7
+    # https://math.stackexchange.com/questions/1923613/partial-derivative-of-cosine-similarity
+    norm_yt = np.linalg.norm(y_true)
+    norm_y = np.linalg.norm(y)
+    cossim = np.sum(y*y_true)/(norm_y*norm_yt)
+    cossim_d = (y / norm_y*norm_yt) - (cossim * (y_true / norm_yt**2))
+    return cossim_d
+
